@@ -8,6 +8,7 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import StatsCard from "../components/StatsCard";
 import QuickStats from "../components/QuickStats";
+import AddCustomerForm from "../components/AddCustomerForm";
 
 export default function Dashboard() {
   return (
@@ -54,6 +55,7 @@ export default function Dashboard() {
   <SubscriptionCard />
 </div>
 <QuickStats />
+<AddCustomerForm />
 <CustomerTable />
       </div>
     </div>

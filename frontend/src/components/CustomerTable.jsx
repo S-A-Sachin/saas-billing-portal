@@ -1,8 +1,19 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
+import EditCustomer from "./EditCustomer";
 
 function CustomerTable() {
   const [customers, setCustomers] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const handleDelete = async (id) => {
+    try {
+      await API.delete(`/customers/${id}`);
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -21,6 +32,18 @@ function CustomerTable() {
     <div className="table-box">
       <h2>Customer Management</h2>
 
+      <input
+        type="text"
+        placeholder="Search Customer"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{
+          padding: "10px",
+          marginBottom: "15px",
+          width: "100%",
+        }}
+      />
+
       <table>
         <thead>
           <tr>
@@ -29,19 +52,57 @@ function CustomerTable() {
             <th>Plan</th>
             <th>Amount</th>
             <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
 
         <tbody>
-          {customers.map((customer) => (
-            <tr key={customer._id}>
-              <td>{customer.name}</td>
-              <td>{customer.email}</td>
-              <td>{customer.plan}</td>
-              <td>₹{customer.amount}</td>
-              <td>{customer.status}</td>
-            </tr>
-          ))}
+          {customers
+            .filter((customer) =>
+              customer.name.toLowerCase().includes(search.toLowerCase())
+            )
+            .map((customer) => (
+              <tr key={customer._id}>
+                <td>{customer.name}</td>
+                <td>{customer.email}</td>
+                <td>{customer.plan}</td>
+                <td>₹{customer.amount}</td>
+                <td>{customer.status}</td>
+
+                <td>
+<button
+    onClick={async () => {
+      const newName = prompt(
+        "Enter new customer name",
+        customer.name
+      );
+
+      if (!newName) return;
+
+      try {
+        await API.put(`/customers/${customer._id}`, {
+          ...customer,
+          name: newName,
+        });
+
+        window.location.reload();
+      } catch (err) {
+        console.error(err);
+      }
+    }}
+  >
+    Edit
+  </button>
+
+  <button
+    onClick={() => handleDelete(customer._id)}
+    style={{ marginLeft: "10px" }}
+  >
+    Delete
+  </button>
+</td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
