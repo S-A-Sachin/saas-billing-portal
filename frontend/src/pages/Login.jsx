@@ -1,55 +1,66 @@
 import { useState } from "react";
-import { loginUser } from "../services/auth";
+import API from "../services/api";
 
-function Login() {
+export default function Login({ setIsLoggedIn }) {
   const [email, setEmail] = useState("");
-  const [password, setPassword] =
-    useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLogin = async (e) => {
+  const loginHandler = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await loginUser({
+      const res = await API.post("/auth/login", {
         email,
         password,
       });
 
-      localStorage.setItem(
-        "token",
-        res.data.token
-      );
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", res.data.role);
+      localStorage.setItem("name", res.data.name);
 
-      localStorage.setItem(
-        "role",
-        res.data.role
+      setIsLoggedIn(true);
+    } catch (error) {
+      alert(
+        error.response?.data?.message || "Login Failed"
       );
-
-      alert("Login Successful");
-    } catch (err) {
-      console.error(err);
     }
   };
 
   return (
-    <div>
-      <h1>Login</h1>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
+      <form onSubmit={loginHandler}>
+        <h2>Login</h2>
 
-      <form onSubmit={handleLogin}>
         <input
+          type="email"
           placeholder="Email"
+          value={email}
           onChange={(e) =>
             setEmail(e.target.value)
           }
         />
 
+        <br />
+        <br />
+
         <input
           type="password"
           placeholder="Password"
+          value={password}
           onChange={(e) =>
             setPassword(e.target.value)
           }
         />
+
+        <br />
+        <br />
 
         <button type="submit">
           Login
@@ -58,5 +69,3 @@ function Login() {
     </div>
   );
 }
-
-export default Login;

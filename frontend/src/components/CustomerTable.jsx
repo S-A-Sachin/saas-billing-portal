@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
 import EditCustomer from "./EditCustomer";
-const role = localStorage.getItem("role");
 
 function CustomerTable() {
+  const role = localStorage.getItem("role");
+
   const [customers, setCustomers] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -53,14 +54,19 @@ function CustomerTable() {
             <th>Plan</th>
             <th>Amount</th>
             <th>Status</th>
-            {role === "Admin" && <th>Action</th>}
+
+            {role === "Admin" && (
+              <th>Action</th>
+            )}
           </tr>
         </thead>
 
         <tbody>
           {customers
             .filter((customer) =>
-              customer.name.toLowerCase().includes(search.toLowerCase())
+              customer.name
+                .toLowerCase()
+                .includes(search.toLowerCase())
             )
             .map((customer) => (
               <tr key={customer._id}>
@@ -70,43 +76,26 @@ function CustomerTable() {
                 <td>₹{customer.amount}</td>
                 <td>{customer.status}</td>
 
-                <td>
-<button
-    onClick={async () => {
-      const newName = prompt(
-        "Enter new customer name",
-        customer.name
-      );
+                {role === "Admin" && (
+                  <td>
+                    <EditCustomer
+                      customer={customer}
+                    />
 
-      if (!newName) return;
-
-      try {
-        await API.put(`/customers/${customer._id}`, {
-          ...customer,
-          name: newName,
-        });
-
-        window.location.reload();
-      } catch (err) {
-        console.error(err);
-      }
-    }}
-  >
-    Edit
-  </button>
-
-  {role === "Admin" && (
-  <td>
-    <EditCustomer customer={customer} />
-
-    <button
-      onClick={() => handleDelete(customer._id)}
-    >
-      Delete
-    </button>
-  </td>
-)}
-</td>
+                    <button
+                      onClick={() =>
+                        handleDelete(
+                          customer._id
+                        )
+                      }
+                      style={{
+                        marginLeft: "10px",
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
         </tbody>

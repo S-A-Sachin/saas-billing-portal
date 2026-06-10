@@ -9,15 +9,30 @@ import Navbar from "../components/Navbar";
 import StatsCard from "../components/StatsCard";
 import QuickStats from "../components/QuickStats";
 import AddCustomerForm from "../components/AddCustomerForm";
-const role = localStorage.getItem("role");
-
 export default function Dashboard() {
+const role = localStorage.getItem("role");
+const logout = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
+
   return (
     <div className="dashboard">
       <Sidebar />
 
       <div className="main">
-        <Navbar />
+  <Navbar />
+
+  <button
+    onClick={logout}
+    style={{
+      float: "right",
+      padding: "10px",
+      marginBottom: "10px",
+    }}
+  >
+    Logout
+  </button>
 
         <div className="cards">
           <StatsCard title="Total Revenue" value="₹8,45,000" />
