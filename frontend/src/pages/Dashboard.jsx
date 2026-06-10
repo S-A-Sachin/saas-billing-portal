@@ -9,6 +9,7 @@ import Navbar from "../components/Navbar";
 import StatsCard from "../components/StatsCard";
 import QuickStats from "../components/QuickStats";
 import AddCustomerForm from "../components/AddCustomerForm";
+const role = localStorage.getItem("role");
 
 export default function Dashboard() {
   return (
@@ -55,7 +56,7 @@ export default function Dashboard() {
   <SubscriptionCard />
 </div>
 <QuickStats />
-<AddCustomerForm />
+{role === "Admin" && <AddCustomerForm />}
 <CustomerTable />
       </div>
     </div>

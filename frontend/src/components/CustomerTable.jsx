@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
 import EditCustomer from "./EditCustomer";
+const role = localStorage.getItem("role");
 
 function CustomerTable() {
   const [customers, setCustomers] = useState([]);
@@ -52,7 +53,7 @@ function CustomerTable() {
             <th>Plan</th>
             <th>Amount</th>
             <th>Status</th>
-            <th>Actions</th>
+            {role === "Admin" && <th>Action</th>}
           </tr>
         </thead>
 
@@ -94,12 +95,17 @@ function CustomerTable() {
     Edit
   </button>
 
-  <button
-    onClick={() => handleDelete(customer._id)}
-    style={{ marginLeft: "10px" }}
-  >
-    Delete
-  </button>
+  {role === "Admin" && (
+  <td>
+    <EditCustomer customer={customer} />
+
+    <button
+      onClick={() => handleDelete(customer._id)}
+    >
+      Delete
+    </button>
+  </td>
+)}
 </td>
               </tr>
             ))}
